@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <title>Document</title>
+    <script src="products.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="navbar">
+            <div class="name">
+                <p>After School Fun</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search" v-model="search">
+            </div>
+            <div class="carticon" v-on:click="showCheckout" v-if="cartItemCount>0">
+                <span>{{cartItemCount}}</span>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="carticon" v-else>
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+        <div style="display: flex; height: 100vh; width: 100%; background-color:black;">
+            <div class="filter"
+                style="width: 20%; height: 100%; background-color: #dad7ca; overflow: auto; padding: 2%;">
+                <div style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 100%;">
+                    <p style="text-align: center;">FITLER</p>
+                    <p>Sort BY: </p>
+                    <label>
+                        <input type="radio" value="price" v-model="sort">Price
+                        <br>
+                        <input type="radio" value="location" v-model="sort">Location
+                        <br>
+                        <input type="radio" value="availability" v-model="sort">Availability
+                        <br>
+                        <input type="radio" value="title" v-model="sort">Title
+                    </label>
+                    <label>
+                        <p>Sort order</p>
+                        <input type="radio" value="ascending" v-model="sortOrder">Ascending
+                        <br>
+                        <input type="radio" value="descending" v-model="sortOrder">Desending
+                    </label>
+                </div>
+            </div>
+            <div class="products"
+                style="width: 80%; height:100%; background-color: #dad7ca; overflow: auto; padding: 2%;">
+                <div>
+                    <header>
+                        <h1 v-text="sitename" style="text-align: center; padding-bottom: 10px;"></h1>
+                    </header>
+                    <main>
+                        <div class="productblock" style="padding-top: 10px; ">
+
+                            <div v-if="orderPlaced">
+                                <h2>Order Information</h2>
+                                <p>First Name: {{order.firstName}}</p>
+                                <p>Last Name: {{order.lastName}}</p>
+                                <p>Number: {{order.number}}</p>
+                                <button class="addtocart" v-on:click="placeOrder">Go back</button>
+                            </div>
+                            <div v-else-if="showProduct" style="padding-left: 15px; display: flex; flex-wrap: wrap;">
+                                <div v-if="search!==''" v-for="product in searching"
+                                    style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 20%;">
+                                    <figure>
+                                        <img v-bind:src="product.image" height="100px" width="100px">
+                                    </figure>
+                                    <h2 v-text="product.title"></h2>
+                                    <p v-text="product.description"></p>
+                                    <br>
+                                    <p>Price: AED {{product.price}} </p>
+                                    <br>
+                                    <p>Available Inventory: {{product.availableInventory - cartCount(product.id)}}</p>
+                                    <br>
+                                    <p>Location: {{product.location}}</p>
+                                    <br>
+                                    <button class="addtocart" v-on:click="addToCart(product)"
+                                        v-if="canAddToCart(product)">Add to Cart</button>
+                                    <!-- This button will be displayed if it is false -->
+                                    <button class="addtocart" disabled="disabled" v-else>
+                                        Add to Cart
+                                    </button>
+                                    <span v-if='product.availableInventory === cartCount(product.id)'>All out!</span>
+                                    <span v-else-if="product.availableInventory - cartCount(product.id)<10">
+                                        Only {{product.availableInventory - cartCount(product.id)}} left!
+                                    </span><span v-else>Buy now!</span>
+                                </div>
+                                <div v-if="search==''" v-for="product in sortedProducts"
+                                    style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 20%;">
+                                    <figure>
+                                        <img v-bind:src="product.image" height="100px" width="100px">
+                                    </figure>
+                                    <h2 v-text="product.title"></h2>
+                                    <p v-text="product.description"></p>
+                                    <br>
+                                    <p>Price: AED {{product.price}} </p>
+                                    <br>
+                                    <p>Available Inventory: {{product.availableInventory - cartCount(product.id)}}</p>
+                                    <br>
+                                    <p>Location: {{product.location}}</p>
+                                    <br>
+                                    <button class="addtocart" v-on:click="addToCart(product)"
+                                        v-if="canAddToCart(product)">
+                                        Add to Cart
+                                    </button>
+                                    <!-- This button will be displayed if it is false -->
+                                    <button class="addtocart" disabled="disabled" v-else>
+                                        Add to Cart
+                                    </button>
+                                    <span v-if='product.availableInventory === cartCount(product.id)'>All out!</span>
+                                    <span v-else-if="product.availableInventory - cartCount(product.id)<10">
+                                        Only {{product.availableInventory - cartCount(product.id)}} left!
+                                    </span><span v-else>Buy now!</span>
+                                </div>
+                            </div>
+                            <div v-else-if="showProduct === false">
+                                <div class="cart-items">
+                                    <div v-for="product in cartProducts"
+                                        style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 20%;">
+                                        <figure>
+                                            <img v-bind:src="product.image" height="100px" width="100px">
+                                        </figure>
+                                        <h2 v-text="product.title"></h2>
+                                        <p v-text="product.description"></p>
+                                        <br>
+                                        <p>Price: AED {{product.price}} </p>
+                                        <br>
+                                        <p>Quantity: {{cartCount(product.id)}}</p>
+                                        <button class="addtocart" v-on:click="removeProduct(product.id)">Remove One</button>
+                                    </div>
+                                </div>
+                                <div class="checkout"
+                                    style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 80%;">
+                                    <h2 style="text-align: center;">Checkout</h2>
+                                    <p>
+                                        <strong>First Name: </strong>
+                                        <!-- this input field is bound to firstname in the order object -->
+                                        <input v-model.trim="order.firstName" type="text" />
+                                    </p>
+                                    <p>
+                                        <strong>Last Name: </strong>
+                                        <!-- this input field is bound to lastname in the order object -->
+                                        <input v-model.trim="order.lastName" type="text">
+                                    </p>
+                                    <p>
+                                        <strong>Number: </strong>
+                                        <!-- this input field is bound to lastname in the order object -->
+                                        <input v-model.trim="order.number" type="number">
+                                    </p>
+                                    <button class="addtocart" v-if="NameandPhoneValid" v-on:click="placeOrder"
+                                        style="justify-content: center;">Place Order</button>
+                                    <button v-else disabled="disabled" style="justify-content: center;">Place
+                                        Order</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    let webstore = new Vue({
+        // specifies the Document Object Model (DOM)
+        el: "#app",
+        data: {
+            orderPlaced: false,
+            showProduct: true,
+            sitename: "Classes",
+            sort: '',
+            sortOrder: 'ascending',
+            search: '',
+            order: {
+                firstName: "",
+                lastName: "",
+                number: '',
+            },
+            products: products,
+            states: {
+                AL: 'Alabama',
+                AR: 'Arizona',
+                CA: 'California',
+                NV: 'Nevada'
+            },
+            cart: []
+        },
+        methods: {
+            addToCart: function (product) {
+                this.cart.push(product.id);
+            },
+            canAddToCart: function (product) {
+                return product.availableInventory > this.cartCount(product.id);
+            },
+            showCheckout: function () {
+                this.showProduct = this.showProduct ? false : true;
+                this.sitename = this.showProduct ? "Courses" : "Cart"
+            },
+            placeOrder: function () {
+                this.orderPlaced = this.orderPlaced ? false : true;
+                this.showProduct = true;
+                this.sitename = 'Courses'
+                this.cart.splice(0, this.cart.length);
+            },
+
+            cartCount(id) {
+                let count = 0;
+                for (let i = 0; i < this.cart.length; i++) {
+                    if (this.cart[i] === id) {
+                        count++
+                    }
+                }
+                return count;
+            },
+            removeProduct(id) {
+                let found = false
+                function rearrangingCart(cartItem) {
+                    if (found == false) {
+                        if (cartItem == id) {
+                            found = true;
+                        } else {
+                            return cartItem;
+                        }
+                    } else {
+                        return cartItem;
+                    }
+                }
+                this.cart = this.cart.filter(rearrangingCart);
+            },
+        },
+        computed: {
+            cartItemCount: function () {
+                return this.cart.length || " ";
+            },
+            sortedProducts() {
+                let cartSort = this.cart;
+                let productsArray = this.products.slice(0);
+                function cartCount(id) {
+                    let count = 0;
+                    for (let i = 0; i < cartSort.length; i++) {
+                        if (cartSort[i] === id) {
+                            count++
+                        }
+                    }
+                    return count;
+                }
+                if (this.sort === 'price' && this.sortOrder === 'ascending') {
+                    function compare(a, b) {
+                        if (a.price > b.price)
+                            return 1;
+
+                        if (a.price < b.price)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare);
+                } else if (this.sort === 'price' && this.sortOrder === 'descending') {
+                    function compare(a, b) {
+                        if (a.price > b.price)
+                            return 1;
+
+                        if (a.price < b.price)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare).reverse();
+                } else if (this.sort === 'location' && this.sortOrder === 'ascending') {
+                    function compare(a, b) {
+                        if (a.location > b.location)
+                            return 1;
+
+                        if (a.location < b.location)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare);
+                } else if (this.sort === 'location' && this.sortOrder === 'descending') {
+                    function compare(a, b) {
+                        if (a.location > b.location)
+                            return 1;
+
+                        if (a.location < b.location)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare).reverse();
+                } else if (this.sort === 'availability' && this.sortOrder === 'ascending') {
+                    function compare(a, b) {
+                        if (a.availableInventory - cartCount(a.id) > b.availableInventory - cartCount(b.id))
+                            return 1;
+
+                        if (a.availableInventory - cartCount(a.id) < b.availableInventory - cartCount(b.id))
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare);
+                } else if (this.sort === 'availability' && this.sortOrder === 'descending') {
+                    function compare(a, b) {
+                        if (a.availableInventory - cartCount(a.id) > b.availableInventory - cartCount(b.id))
+                            return 1;
+
+                        if (a.availableInventory - cartCount(a.id) < b.availableInventory - cartCount(b.id))
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare).reverse();
+                } else if (this.sort === 'title' && this.sortOrder === 'ascending') {
+                    function compare(a, b) {
+                        if (a.title > b.title)
+                            return 1;
+
+                        if (a.title < b.title)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare);
+                } else if (this.sort === 'title' && this.sortOrder === 'descending') {
+                    function compare(a, b) {
+                        if (a.title > b.title)
+                            return 1;
+
+                        if (a.title < b.title)
+                            return -1;
+                        return 0;
+                    }
+                    return productsArray.sort(compare).reverse();
+                } else {
+                    return productsArray;
+                }
+            },
+            cartProducts() {
+                let productsArray = this.products.slice(0);
+                let cartProducts = [];
+                for (let i = 0; i < productsArray.length; i++) {
+                    for (let j = 0; j < this.cart.length; j++) {
+                        if (productsArray[i].id == this.cart[j]) {
+                            cartProducts.push(productsArray[i])
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+                return cartProducts;
+            },
+            inventoryCount: function () {
+                return this.product.availableInventory - this.cartItemCount;
+            },
+            searching: function () {
+                searchCourse = this.search.toLowerCase();
+                return products.filter(product => product.title.toLowerCase().includes(searchCourse) || 
+                product.description.toLowerCase().includes(searchCourse) || product.location.toLowerCase().includes(searchCourse));
+            },
+            NameandPhoneValid: function () {
+                return /^[A-Za-z\s]+$/.test(this.order.firstName) && /^[A-Za-z\s]+$/.test(this.order.lastName)
+                    && /^[0-9]+$/.test(this.order.number);
+            }
+        }
+    });
+
+</script>
+</html>
