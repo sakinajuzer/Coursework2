@@ -3,7 +3,6 @@ const app = express();
 
 app.use(express.json());
 app.set('port', 3000);
-
 app.use((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -11,14 +10,14 @@ app.use((req,res,next) => {
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next();
 });
-
 const MongoClient = require("mongodb").MongoClient;
 
 let db;
 
+
 MongoClient.connect('mongodb+srv://sakina:Feb232004@cluster0.fvp5jbf.mongodb.net/', (err, client) => {
     db = client.db('MobileApp');
-});
+    });
 
 app.get('/', (req, res, next) => {
     res.send('Select a collection /collection/messages');
@@ -37,8 +36,9 @@ app.get('/collection/:collectionName', (req, res, next) => {
     })
 });
 
-app.post('/collection/:collectionName', (req, res, next) => {
-    req.collection.insert(req.body, (e, results) => {
+app.post('/:collectionName', (req, res, next) => {
+    console.log(req.body);
+    req.collection.insertOne(req.body, (e, results) => {
         if (e) return next(e)
         // this .ops is written so that when data is stored into mongoDB it will be given the unique ID for each product
         res.send(results.ops)
@@ -75,6 +75,12 @@ app.delete('/collection/:collectionName/:id', (req, res, next) => {
         }
     );
 });
+
+// http.createServer((req, res) => {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.writeHead(200, {"Content-Type" : "text/plain"});
+//     res.end(JSON.stringify(products));
+// });
 
 const port = process.env.PORT || 3000
 app.listen(port)

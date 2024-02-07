@@ -10,7 +10,8 @@
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <title>Document</title>
-    <script src="products.js"></script>
+    <!-- <script src="products.js"></script> -->
+    <script src="../server.js"></script>
 </head>
 
 <body>
@@ -67,7 +68,7 @@
                                 <p>First Name: {{order.firstName}}</p>
                                 <p>Last Name: {{order.lastName}}</p>
                                 <p>Number: {{order.number}}</p>
-                                <button class="addtocart" v-on:click="placeOrder">Go back</button>
+                                <button class="addtocart" v-on:click="goBack">Go back</button>
                             </div>
                             <div v-else-if="showProduct" style="padding-left: 15px; display: flex; flex-wrap: wrap;">
                                 <div v-if="search!==''" v-for="product in searching"
@@ -136,7 +137,8 @@
                                         <p>Price: AED {{product.price}} </p>
                                         <br>
                                         <p>Quantity: {{cartCount(product.id)}}</p>
-                                        <button class="addtocart" v-on:click="removeProduct(product.id)">Remove One</button>
+                                        <button class="addtocart" v-on:click="removeProduct(product.id)">Remove
+                                            One</button>
                                     </div>
                                 </div>
                                 <div class="checkout"
@@ -185,7 +187,7 @@
                 lastName: "",
                 number: '',
             },
-            products: products,
+            products: [],
             states: {
                 AL: 'Alabama',
                 AR: 'Arizona',
@@ -193,6 +195,17 @@
                 NV: 'Nevada'
             },
             cart: []
+        },
+        created: function () {
+            console.log("requesting data from server");
+            fetch('http://localhost:3000/collection/products').then(
+                function (response) {
+                    response.json().then(
+                        function (json) {
+                            webstore.products = json;
+                            console.log(json);
+                        })
+                });
         },
         methods: {
             addToCart: function (product) {
@@ -205,9 +218,39 @@
                 this.showProduct = this.showProduct ? false : true;
                 this.sitename = this.showProduct ? "Courses" : "Cart"
             },
+            goBack: function() {
+                console.log("Order Placed");
+            },
             placeOrder: function () {
                 this.orderPlaced = this.orderPlaced ? false : true;
                 this.showProduct = true;
+                let productsOrdered = [];
+
+                this.cartProducts.forEach(element => {
+                    productsOrdered.push(element.title + " x " + this.cartCount(element.id));
+                });
+
+                let orderInfo = {
+                    "FullName": this.order['firstName'] + this.order['lastName'],
+                    "Number": this.order['number'],
+                    "Products": productsOrdered
+                }
+
+                fetch('http://localhost:3000/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderInfo)
+                }).then(
+                function (response) {
+                    response.json().then(
+                        function (json) {
+                            webstore.products = json;
+                            console.log(json);
+                        })
+                });
+
                 this.sitename = 'Courses'
                 this.cart.splice(0, this.cart.length);
             },
@@ -357,8 +400,8 @@
             },
             searching: function () {
                 searchCourse = this.search.toLowerCase();
-                return products.filter(product => product.title.toLowerCase().includes(searchCourse) || 
-                product.description.toLowerCase().includes(searchCourse) || product.location.toLowerCase().includes(searchCourse));
+                return this.products.filter(product => product.title.toLowerCase().includes(searchCourse) ||
+                    product.description.toLowerCase().includes(searchCourse) || product.location.toLowerCase().includes(searchCourse));
             },
             NameandPhoneValid: function () {
                 return /^[A-Za-z\s]+$/.test(this.order.firstName) && /^[A-Za-z\s]+$/.test(this.order.lastName)
@@ -368,4 +411,5 @@
     });
 
 </script>
+
 </html>
