@@ -198,7 +198,7 @@
         },
         created: function () {
             console.log("requesting data from server");
-            fetch('http://localhost:3000/collection/products').then(
+            fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/products').then(
                 function (response) {
                     response.json().then(
                         function (json) {
@@ -236,7 +236,7 @@
                     "Products": productsOrdered
                 }
 
-                fetch('http://localhost:3000/orders', {
+                fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
