@@ -11,6 +11,14 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next();
 });
+
+// Logger middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+    next();
+});
+
+
 const MongoClient = require("mongodb").MongoClient;
 
 let db;
@@ -90,6 +98,30 @@ app.post('/collection/:collectionName', (req, res, next) => {
 
         console.log('Order saved successfully:', result.ops);
         res.status(201).json(result.ops); // Respond with the saved order data
+    });
+});
+
+app.get('/collection/:collectionName/search/:searchQ', (req, res, next) => {
+    const query = req.params.searchQ; // Retrieve the search query parameter
+
+    let filter = {}; // Define an empty filter object
+
+    if (query) {
+        // If a search query is provided, construct a filter to search by title or description
+        filter = {
+            $or: [
+                { title: { $regex: query, $options: 'i' } }, // Case-insensitive search by title // Case-insensitive search by description
+            ]
+        };
+    }
+
+    // Use the filter to find matching classes
+    db.collection('products').find(filter).toArray((err, results) => {
+        if (err) {
+            console.error('Error performing search:', err);
+            return res.status(500).json({ error: 'Failed to perform search' });
+        }
+        res.send(results); // Send the search results back to the client
     });
 });
 
