@@ -93,3 +93,9 @@
 //         location: "Sharjah"
 //     }
 // ]
+
+// searching: function () {
+//     searchCourse = this.search.toLowerCase();
+//     return this.products.filter(product => product.title.toLowerCase().includes(searchCourse) ||
+//         product.description.toLowerCase().includes(searchCourse) || product.location.toLowerCase().includes(searchCourse));
+// },

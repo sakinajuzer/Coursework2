@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 
 app.use(express.json());
 app.set('port', 3000);
@@ -75,7 +76,40 @@ app.delete('/collection/:collectionName/:id', (req, res, next) => {
         }
     );
 });
- 
+
+app.post('/collection/:collectionName', (req, res, next) => {
+    // Assuming you have access to the order data in the request body
+    const orderData = req.body;
+
+    // Save the order data to your database
+    db.collection('orders').insertOne(orderData, (err, result) => {
+        if (err) {
+            console.error('Error saving order:', err);
+            return res.status(500).json({ error: 'Failed to save order' });
+        }
+
+        console.log('Order saved successfully:', result.ops);
+        res.status(201).json(result.ops); // Respond with the saved order data
+    });
+});
+
+// Define the directory where your static images are located
+const STATIC_IMAGE_DIR = path.join(__dirname,'static','images');
+
+// Set up middleware to serve static files (images in this case)
+app.use('/images', express.static(STATIC_IMAGE_DIR));
+
+// Define a route to handle image requests
+app.get('/images/:imageFilename', (req, res) => {
+    const imageFilename = req.params.imageFilename;
+    res.sendFile(path.join(STATIC_IMAGE_DIR, imageFilename));
+});
+
+// Error handler middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
 
 const port = process.env.PORT || 3000
 app.listen(port)

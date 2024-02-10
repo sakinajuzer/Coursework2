@@ -21,7 +21,9 @@
                 <p>After School Fun</p>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Search" v-model="search">
+                <span>
+                    <input type="text" placeholder="Search" v-model="search" @input="searching">
+                </span>
             </div>
             <div class="carticon" v-on:click="showCheckout" v-if="cartItemCount>0">
                 <span>{{cartItemCount}}</span>
@@ -71,7 +73,7 @@
                                 <button class="addtocart" v-on:click="goBack">Go back</button>
                             </div>
                             <div v-else-if="showProduct" style="padding-left: 15px; display: flex; flex-wrap: wrap;">
-                                <div v-if="search!==''" v-for="product in searching"
+                                <div v-for="product in searching"
                                     style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 20%;">
                                     <figure>
                                         <img v-bind:src="product.image" height="100px" width="100px">
@@ -96,7 +98,7 @@
                                         Only {{product.availableInventory - cartCount(product.id)}} left!
                                     </span><span v-else>Buy now!</span>
                                 </div>
-                                <div v-if="search==''" v-for="product in sortedProducts"
+                                <div v-for="product in sortedProducts"
                                     style="margin: 2%; background-color: #a3b18a; padding: 2%; border-radius: 2%; width: 20%;">
                                     <figure>
                                         <img v-bind:src="product.image" height="100px" width="100px">
@@ -198,7 +200,7 @@
         },
         created: function () {
             console.log("requesting data from server");
-            fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/products').then(
+            fetch('http://localhost:3000/collection/products').then(
                 function (response) {
                     response.json().then(
                         function (json) {
@@ -218,42 +220,50 @@
                 this.showProduct = this.showProduct ? false : true;
                 this.sitename = this.showProduct ? "Courses" : "Cart"
             },
-            goBack: function() {
+            goBack: function () {
                 console.log("Order Placed");
             },
+            
             placeOrder: function () {
-                this.orderPlaced = this.orderPlaced ? false : true;
+                this.orderPlaced = !this.orderPlaced;
                 this.showProduct = true;
+
                 let productsOrdered = [];
 
+                // Use this.cartProducts instead of this.cart
                 this.cartProducts.forEach(element => {
                     productsOrdered.push(element.title + " x " + this.cartCount(element.id));
                 });
 
                 let orderInfo = {
-                    "FullName": this.order['firstName'] + this.order['lastName'],
+                    "FullName": this.order['firstName'] + ' ' + this.order['lastName'],
                     "Number": this.order['number'],
                     "Products": productsOrdered
                 }
 
-                fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/orders', {
+                fetch('http://localhost:3000/collection/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(orderInfo)
-                }).then(
-                function (response) {
-                    response.json().then(
-                        function (json) {
-                            webstore.products = json;
-                            console.log(json);
-                        })
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to place order');
+                    }
+                }).then(json => {
+                    // Handle the response if needed
+                    console.log(json);
+                }).catch(error => {
+                    console.error('Error placing order:', error.message);
                 });
 
-                this.sitename = 'Courses'
+                this.sitename = 'Courses';
                 this.cart.splice(0, this.cart.length);
             },
+
 
             cartCount(id) {
                 let count = 0;
@@ -279,7 +289,30 @@
                 }
                 this.cart = this.cart.filter(rearrangingCart);
             },
+
+            searching: function () {
+                // Construct the URL with the search query as a parameter
+                const url = `http://localhost:3000/collection/classes/search/${this.search}`;
+
+                // Log the search query
+                // console.log('Search query:', this.searching);
+
+                // Fetch data from the server based on the search query
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update the products list with the search results
+                        this.products = data;
+                        // Log the search results in the console
+                        console.log('Search results:', data);
+                    })
+                    .catch(error => {
+                        // Log any errors that occur during the search process
+                        console.error('Error performing search:', error.message);
+                    });
+            },
         },
+
         computed: {
             cartItemCount: function () {
                 return this.cart.length || " ";
@@ -398,11 +431,7 @@
             inventoryCount: function () {
                 return this.product.availableInventory - this.cartItemCount;
             },
-            searching: function () {
-                searchCourse = this.search.toLowerCase();
-                return this.products.filter(product => product.title.toLowerCase().includes(searchCourse) ||
-                    product.description.toLowerCase().includes(searchCourse) || product.location.toLowerCase().includes(searchCourse));
-            },
+
             NameandPhoneValid: function () {
                 return /^[A-Za-z\s]+$/.test(this.order.firstName) && /^[A-Za-z\s]+$/.test(this.order.lastName)
                     && /^[0-9]+$/.test(this.order.number);
