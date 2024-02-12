@@ -241,7 +241,7 @@
                     "Products": productsOrdered
                 }
 
-                fetch('http://localhost:3000/collection/orders', {
+                fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -275,7 +275,7 @@
             },
 
             changeInventory(productId, inventoryUpdated) {
-                const url = `http://localhost:3000/collection/products/updateInventory/${productId}`;
+                const url = `http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/products/updateInventory/${productId}`;
                 const data = { availableInventory: inventoryUpdated };
 
                 fetch(url, {
@@ -324,7 +324,7 @@
 
             searching: function () {
                 // Construct the URL with the search query as a parameter
-                const url = (`http://localhost:3000/collection/classes/search/${this.search}`);
+                const url = (`http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/classes/search/${this.search}`);
 
                 // Log the search query
                 // console.log('Search query:', this.searching);
