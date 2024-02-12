@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "7758b1dc-00a0-470f-a1d6-6df11213fa2d",
+		"name": "AfterSchoolFun",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32504737"
+	},
+	"item": [
+		{
+			"name": "displayProducts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/collection/products",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"collection",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ordersRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FullName\": \"Sakina Chaklasi\",\r\n    \"Number\":\"9238047320\",\r\n    \"Products\":[\"Art Classes x 1\",\"Crochet Classes x 1\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/collection/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"collection",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateInventory",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"availableInventory\":10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/collection/products/updateInventory/65c0b1d150e91ea337eea227",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"collection",
+						"products",
+						"updateInventory",
+						"65c0b1d150e91ea337eea227"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchRequest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/collection/products/search/art",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"collection",
+						"products",
+						"search",
+						"art"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "staticImageRequest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/images/candle.png",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"images",
+						"candle.png"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "displayOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/collection/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"collection",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "staticImage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/images/candle.jpeg",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"images",
+						"candle.jpeg"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

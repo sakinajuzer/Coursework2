@@ -1,0 +1,120 @@
+[{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea227"
+  },
+  "id": 1001,
+  "title": "Crochet Classes",
+  "description": "Learn the art of needle and yarn through crocheting !!!",
+  "price": 200,
+  "image": "../static/images/crochet.jpeg",
+  "availableInventory": 10,
+  "location": "Abu Dhabi"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea228"
+  },
+  "id": 1002,
+  "title": "Art Classes",
+  "description": "Find yourself playing with colours !!!",
+  "price": 250,
+  "image": "../static/images/artclass.jpg",
+  "availableInventory": 9,
+  "location": "Jumeirah"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea229"
+  },
+  "id": 1003,
+  "title": "Horse Riding Classes",
+  "description": "Explore the world on a Horseback !!!",
+  "price": 400,
+  "image": "../static/images/horse.jpg",
+  "availableInventory": 10,
+  "location": "Ajman"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22a"
+  },
+  "id": 1004,
+  "title": "Candle Making Classes",
+  "description": "Learn how to make your favourite scented candle your own way",
+  "price": 500,
+  "image": "../static/images/candle.png",
+  "availableInventory": 10,
+  "location": "Barsha"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22b"
+  },
+  "id": 1005,
+  "title": "Soap Making Classes",
+  "description": "Learn what's best suited for your skin and make your own soap",
+  "price": 300,
+  "image": "../static/images/soap.png",
+  "availableInventory": 10,
+  "location": "Sharjah"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22c"
+  },
+  "id": 1006,
+  "title": "Resin Art Classes",
+  "description": "Pour, Create, Inspire: Learn Resin Art to make your creations",
+  "price": 50,
+  "image": "../static/images/resin.jpg",
+  "availableInventory": 10,
+  "location": "Al Ain"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22d"
+  },
+  "id": 1007,
+  "title": "Pottery Making Classes",
+  "description": "Transform Clay into Art: Experience the joy of Pottery Making",
+  "price": 350,
+  "image": "../static/images/potterymaking.avif",
+  "availableInventory": 10,
+  "location": "Ajman"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22e"
+  },
+  "id": 1008,
+  "title": "Embroidery Classes",
+  "description": "From knots to beauty, Learn the art of Embroidery",
+  "price": 200,
+  "image": "../static/images/emb.png",
+  "availableInventory": 10,
+  "location": "Abu Dhabi"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea22f"
+  },
+  "id": 1009,
+  "title": "Poetry Classes",
+  "description": "f dsf dsf dsf ds fsd fds gd",
+  "price": 50,
+  "image": "../static/images/poetry.jpg",
+  "availableInventory": 10,
+  "location": "Dubai"
+},
+{
+  "_id": {
+    "$oid": "65c0b1d150e91ea337eea230"
+  },
+  "id": 1010,
+  "title": "MakeUp Classes",
+  "description": "From basics to beauty: Learn the art of makeup thorugh every stroke",
+  "price": 50,
+  "image": "../static/images/makeup.jpg",
+  "availableInventory": 10,
+  "location": "Sharjah"
+}]
