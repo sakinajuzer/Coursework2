@@ -199,8 +199,8 @@
             cart: []
         },
         created: function () {
-            console.log("requesting data from server");
-            fetch('http://localhost:3000/collection/products').then(
+            console.log("taking data from server");
+            fetch('http://afterschoolfun-env.eba-ywagdqhq.eu-west-2.elasticbeanstalk.com/collection/products').then(
                 function (response) {
                     response.json().then(
                         function (json) {
@@ -223,7 +223,7 @@
             goBack: function () {
                 console.log("Order Placed");
             },
-            
+
             placeOrder: function () {
                 this.orderPlaced = !this.orderPlaced;
                 this.showProduct = true;
@@ -256,12 +256,44 @@
                 }).then(json => {
                     // Handle the response if needed
                     console.log(json);
+
+                    // Now update inventory
+                    this.cartProducts.forEach(product => {
+                        const inventoryUpdated = product.availableInventory - this.cartCount(product.id);
+                        this.changeInventory(product._id, inventoryUpdated);
+                    });
+
+                    // Clear the cart
+                    this.cartProducts.splice(0, this.cartProducts.length);
+                    // Alternatively, you can use: this.cartProducts = [];
+
+                    // Set sitename
+                    this.sitename = 'Courses';
                 }).catch(error => {
                     console.error('Error placing order:', error.message);
                 });
+            },
 
-                this.sitename = 'Courses';
-                this.cart.splice(0, this.cart.length);
+            changeInventory(productId, inventoryUpdated) {
+                const url = `http://localhost:3000/collection/products/updateInventory/${productId}`;
+                const data = { availableInventory: inventoryUpdated };
+
+                fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Inventory was not updated');
+                        }
+                        // console.log('Inventory changed');
+                    })
+                    .catch(error => {
+                        console.error('oops:', error);
+                    });
             },
 
 
@@ -311,6 +343,7 @@
                         console.error('Error performing search:', error.message);
                     });
             },
+
         },
 
         computed: {
